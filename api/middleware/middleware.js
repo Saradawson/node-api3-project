@@ -1,7 +1,9 @@
 function logger(req, res, next) {
   // DO YOUR MAGIC
-
-  console.log('logger middleware')
+  const timestamp = new Date().toLocaleString();
+  const method = req.method;
+  const url = req.originalUrl;
+  console.log(`[${timestamp}] ${method} to ${url}`);
   next();
 }
 
