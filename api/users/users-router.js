@@ -5,6 +5,7 @@ const {
   validatePost
  } = require('../middleware/middleware');
 const User = require('./users-model');
+const Post = require('../posts/posts-model');
 
 // You will need `users-model.js` and `posts-model.js` both
 // The middleware functions also need to be required
@@ -68,11 +69,22 @@ router.get('/:id/posts', validateUserId, (req, res, next) => {
       .catch(next)
 });
 
-router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
+router.post('/:id/posts',
+ validateUserId,
+  validatePost, 
+  async (req, res, next) => {
   // RETURN THE NEWLY CREATED USER POST
   // this needs a middleware to verify user id
   // and another middleware to check that the request body is valid
-  console.log(req.body);
+  try{
+    const result = await Post.insert({
+      user_id: req.params.id,
+      text: req.text
+    })
+    res.status(201).json(result);
+  }catch(err){
+    next(err)
+  }
 });
 
 router.use((error, req, res, next) => { //eslint-disable-line
